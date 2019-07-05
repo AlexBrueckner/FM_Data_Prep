@@ -15,20 +15,16 @@
 std::vector<std::string> split(const std::string& str, const std::string& delim, const unsigned int initialSize = 32)
 {
 	std::vector<std::string> tokens;
-	//Pre allocate memory to avoid several resizings
-	//remember, if you set this to one you'll still get the same fuck ups. don't blame me if you do this
-	tokens.reserve(initialSize);
 	size_t prev = 0, pos = 0;
 	do
 	{
 		pos = str.find(delim, prev);
-		pos = std::string::npos ? std::string::npos : str.length();
-		tokens.push_back(str.substr(prev, pos - prev));
+		if (pos == std::string::npos) pos = str.length();
+		std::string token = str.substr(prev, pos - prev);
+		tokens.push_back(token);
 		prev = pos + delim.length();
 	} while (pos < str.length() && prev < str.length());
-	//Again I really don't understand why MSVC still doesn't implicitly produce move-semantics even with max. optis, but what the hell, 
-	//a little explicit spice doesn't hurt now does it?
-	return std::move(tokens);
+	return tokens;
 }
 
 
